@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>bluelagoon CHECK — 투자 도구 모음</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --orange:#F37321;
+  --navy:#0B2D5B;
+  --ink:#1B2230;
+  --sub:#5B6475;
+  --line:#E3E6EB;
+  --bg:#FFFFFF;
+  --band:#F4F6F9;
+  --hover:#FFF4EC;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --navy:#9CC2F2; --ink:#E8ECF2; --sub:#A3ACBB; --line:#2A3242;
+    --bg:#121722; --band:#1A2130; --hover:#2A2118;
+  }
+}
+:root[data-theme="dark"]{
+  --navy:#9CC2F2; --ink:#E8ECF2; --sub:#A3ACBB; --line:#2A3242;
+  --bg:#121722; --band:#1A2130; --hover:#2A2118;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Nanum Gothic","나눔고딕","Dotum","돋움","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+
+/* header */
+header{border-bottom:6px solid var(--orange)}
+.top{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;padding:48px 0 28px}
+.brand h1{margin:0;font-size:clamp(40px,7vw,68px);font-weight:800;color:var(--navy);letter-spacing:-0.03em;line-height:1}
+.brand p{margin:12px 0 0;font-size:19px;color:var(--sub)}
+.tools{display:flex;flex-direction:column;align-items:flex-end;gap:10px}
+.count{font-size:16px;color:var(--sub)}
+.count b{color:var(--orange);font-size:28px;font-weight:800;margin-right:2px}
+.search{
+  width:280px;max-width:100%;padding:12px 14px;font:inherit;font-size:17px;
+  border:2px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);
+}
+.search:focus{outline:none;border-color:var(--orange)}
+
+/* groups */
+section{padding:36px 0 8px}
+.group-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.group-head h2{margin:0;font-size:24px;font-weight:800;color:var(--navy)}
+.group-head span{font-size:16px;color:var(--sub)}
+
+.list{border-top:2px solid var(--navy)}
+a.site{
+  display:grid;grid-template-columns:260px 1fr 190px;gap:20px;align-items:center;
+  padding:20px 16px;border-bottom:1px solid var(--line);
+  text-decoration:none;color:inherit;position:relative;
+}
+a.site::before{content:"";position:absolute;left:0;top:0;bottom:0;width:0;background:var(--orange);transition:width .15s}
+a.site:hover,a.site:focus-visible{background:var(--hover);outline:none}
+a.site:hover::before,a.site:focus-visible::before{width:5px}
+.name{font-size:22px;font-weight:800;color:var(--ink);line-height:1.3}
+.repo{display:block;font-size:14px;font-weight:400;color:var(--sub);margin-top:4px;word-break:break-all}
+.desc{font-size:17px;color:var(--ink)}
+.when{font-size:15px;color:var(--sub);text-align:right}
+.when strong{display:block;color:var(--orange);font-weight:700;font-size:15px}
+
+.empty{display:none;padding:40px 0;font-size:18px;color:var(--sub)}
+
+footer{margin-top:48px;padding:28px 0 40px;background:var(--band);font-size:15px;color:var(--sub)}
+footer p{margin:4px 0}
+
+@media (max-width:820px){
+  a.site{grid-template-columns:1fr;gap:6px;padding:18px 12px}
+  .when{text-align:left}
+  .when strong{display:inline;margin-right:6px}
+  .tools{align-items:flex-start;width:100%}
+  .search{width:100%}
+}
+@media (prefers-reduced-motion:reduce){a.site::before{transition:none}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap top">
+    <div class="brand">
+      <h1>bluelagoon</h1>
+      <p>대표 bluelagoon이 운영하는 유용한 투자 사이트 모음</p>
+    </div>
+    <div class="tools">
+      <div class="count"><b id="cnt">0</b>개 사이트</div>
+      <input class="search" id="q" type="search" placeholder="사이트 이름으로 찾기 (예: 자사주)" aria-label="사이트 검색">
+    </div>
+  </div>
+</header>
+
+<main class="wrap" id="main"></main>
+<div class="wrap"><p class="empty" id="empty">찾는 사이트가 없습니다. 다른 단어로 검색해 보세요.</p></div>
+
+<footer>
+  <div class="wrap">
+    <p>모든 사이트는 투자 참고용이며, 데이터 지연·오류가 있을 수 있습니다. 투자 판단의 최종 책임은 이용자에게 있습니다.</p>
+    <p>bluelagoon1222.github.io</p>
+  </div>
+</footer>
+
+<script>
+// ▼ 사이트 추가·삭제는 이 목록만 고치면 됩니다 (repo = 깃허브 저장소 이름, 대소문자 그대로)
+const GROUPS = [
+  { title:"시장 지도·심리", note:"오늘 시장이 어디로 쏠렸는지", sites:[
+    { name:"한국 히트맵", repo:"Finviz-Korea", desc:"KOSPI·KOSDAQ·ETF 섹터별 등락을 한눈에 보는 FINVIZ형 히트맵", when:"장중 30분 간격" },
+    { name:"공포·탐욕 CHECK", repo:"FearGreed-Korea", desc:"한국 공포·탐욕 지수, 미국 F&G, 한국 과열도 지수와 시장 폭", when:"매일" },
+    { name:"MARKET CALENDAR CHECK", repo:"Market-Calendar-Korea", desc:"한·미 실적발표, 지수변경, 휴장일, FOMC·금통위 일정 캘린더", when:"평일 07:40 · 17:50" }
+  ]},
+  { title:"수급·공시", note:"누가 사고 누가 파는지", sites:[
+    { name:"사모펀드 수급 CHECK", repo:"Samo-Flow-Korea", desc:"사모펀드 순매수·순매도 상위 종목과 종목별 일별 추이", when:"매일 (전일 기준)" },
+    { name:"내부자 매매 CHECK", repo:"Insider-Korea", desc:"임원·주요주주 장내매수·매도와 여러 명이 동시에 산 클러스터 매수", when:"매일" },
+    { name:"자사주 CHECK", repo:"Buyback-Korea", desc:"자사주 취득·소각·처분, 밸류업 공시와 공시 후 주가 반응", when:"평일 08:30 · 19:30" },
+    { name:"지수 정기변경 CHECK", repo:"Index-Rebalance-Korea", desc:"KOSPI200·KOSDAQ150·반도체TOP10 편입·편출 예상 패시브 수급", when:"평일 08:20 · 18:40" }
+  ]},
+  { title:"상품", note:"고객 보유 상품 점검", sites:[
+    { name:"액티브 ETF CHECK", repo:"ActiveETF-Check", desc:"같은 섹터 액티브 ETF의 구성종목·비중 변화·성과 비교 (국내/해외)", when:"평일 08:50 외" },
+    { name:"MIRAE ELS CHECK", repo:"MIRAE-ELS-CHECK", desc:"공모 ELS 회차를 입력하면 조기상환 가능일과 수익률 조회", when:"매일 배치" }
+  ]}
+];
+
+const BASE = "https://bluelagoon1222.github.io/";
+const main = document.getElementById("main");
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+let total = 0;
+GROUPS.forEach(g => {
+  const sec = document.createElement("section");
+  sec.innerHTML =
+    `<div class="group-head"><h2>${esc(g.title)}</h2><span>${esc(g.note)}</span></div>` +
+    `<div class="list">` +
+    g.sites.map(s => {
+      total++;
+      const key = (s.name + " " + s.repo + " " + s.desc).toLowerCase();
+      return `<a class="site" href="${BASE}${esc(s.repo)}/" target="_blank" rel="noopener" data-key="${esc(key)}">
+        <div class="name">${esc(s.name)}<span class="repo">/${esc(s.repo)}</span></div>
+        <div class="desc">${esc(s.desc)}</div>
+        <div class="when"><strong>갱신</strong>${esc(s.when)}</div>
+      </a>`;
+    }).join("") +
+    `</div>`;
+  main.appendChild(sec);
+});
+document.getElementById("cnt").textContent = total;
+
+document.getElementById("q").addEventListener("input", e => {
+  const q = e.target.value.trim().toLowerCase();
+  let shown = 0;
+  document.querySelectorAll("section").forEach(sec => {
+    let n = 0;
+    sec.querySelectorAll("a.site").forEach(a => {
+      const hit = !q || a.dataset.key.includes(q);
+      a.style.display = hit ? "" : "none";
+      if (hit) n++;
+    });
+    sec.style.display = n ? "" : "none";
+    shown += n;
+  });
+  document.getElementById("empty").style.display = shown ? "none" : "block";
+});
+</script>
+</body>
+</html>
