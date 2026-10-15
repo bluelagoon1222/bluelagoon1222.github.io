@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>bluelagoon CHECK — 투자 도구 모음</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
+<title>SJ Market Desk — 투자 도구 모음</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230B2D5B'/><text x='50' y='68' font-size='50' font-weight='800' font-family='Arial' fill='%23F37321' text-anchor='middle'>SJ</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
@@ -38,9 +38,10 @@ body{
 #home{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
 header{border-bottom:6px solid var(--orange)}
-.top{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;padding:48px 0 28px}
+.top{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;padding-top:48px;padding-bottom:28px}
 .brand h1{margin:0;font-size:clamp(40px,7vw,68px);font-weight:800;color:var(--navy);letter-spacing:-0.03em;line-height:1}
 .brand p{margin:12px 0 0;font-size:19px;color:var(--sub)}
+.sj{color:var(--orange)}
 .tools{display:flex;flex-direction:column;align-items:flex-end;gap:10px}
 .count{font-size:16px;color:var(--sub)}
 .count b{color:var(--orange);font-size:28px;font-weight:800;margin-right:2px}
@@ -89,6 +90,18 @@ body.mini #side .gsep{display:block}
 .view{position:relative}
 
 @media (max-width:820px){
+  .wrap{padding:0 20px}
+  header{border-bottom-width:4px}
+  .top{padding-top:36px;padding-bottom:26px;gap:20px}
+  .brand h1{font-size:34px;letter-spacing:-0.02em}
+  .brand p{margin-top:10px;font-size:16px}
+  .count b{font-size:24px}
+  .search{padding:11px 14px;font-size:16px}
+  section{padding:28px 0 4px}
+  .group-head h2{font-size:21px}
+  .group-head span{font-size:14px}
+  .name{font-size:19px}
+  .desc{font-size:15.5px}
   a.site{grid-template-columns:1fr;gap:6px;padding:18px 12px}
   .when{text-align:left}
   .when strong{display:inline;margin-right:6px}
@@ -115,8 +128,8 @@ body.mini #side .gsep{display:block}
   <header>
     <div class="wrap top">
       <div class="brand">
-        <h1>bluelagoon</h1>
-        <p>대표 bluelagoon이 운영하는 유용한 투자 사이트 모음</p>
+        <h1><span class="sj">SJ</span> Market Desk</h1>
+        <p>승진 PB의 투자 데스크</p>
       </div>
       <div class="tools">
         <div class="count"><b id="cnt">0</b>개 사이트</div>
@@ -209,7 +222,7 @@ $("q").addEventListener("input", e => {
 /* --- 왼쪽 메뉴 --- */
 const HOME_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>`;
 $("side").innerHTML =
-  `<a class="homebtn" href="#" title="홈으로">${HOME_SVG}<span class="lbl">bluelagoon 홈</span></a>` +
+  `<a class="homebtn" href="#" title="홈으로">${HOME_SVG}<span class="lbl"><span class="sj">SJ</span> Market Desk</span></a>` +
   GROUPS.map(g =>
     `<div class="gname">${esc(g.title)}</div><div class="gsep"></div>` +
     g.sites.map(s => `<a href="#/${esc(s.repo)}" data-repo="${esc(s.repo)}" title="${esc(s.name)}"><span class="ico" aria-hidden="true">${s.icon}</span><span class="lbl">${esc(s.name)}</span></a>`).join("")
@@ -253,7 +266,7 @@ function route(){
   document.querySelectorAll("#side a[data-repo]").forEach(a => a.classList.toggle("on", a.dataset.repo === site.repo));
   $("newtab").href = url;
   $("mtitle").textContent = site.icon + " " + site.name;
-  document.title = site.name + " · bluelagoon";
+  document.title = site.name + " · SJ Market Desk";
 }
 window.addEventListener("hashchange", route);
 route();
