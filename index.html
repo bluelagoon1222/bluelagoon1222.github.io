@@ -300,6 +300,15 @@ function setMini(on){
 }
 try { if (localStorage.getItem("hubMini") === "1") setMini(true); } catch(e) {}
 $("miniBtn").addEventListener("click", () => setMini(!document.body.classList.contains("mini")));
+/* --- 계산기 등 사이트 안의 오른쪽 패널이 열리면 메뉴를 잠시 접고, 닫히면 원래대로 --- */
+let miniBeforePanel = null;
+function viewMini(on){ document.body.classList.toggle("mini", on); $("miniBtn").querySelector(".ico").textContent = on ? "⇥" : "⇤"; }
+function restorePanelMini(){ if (miniBeforePanel !== null){ viewMini(miniBeforePanel); miniBeforePanel = null; } }
+window.addEventListener("message", e => {
+  if (e.origin !== location.origin || !e.data || e.data.type !== "sjdesk-panel") return;
+  if (e.data.open){ if (miniBeforePanel === null) miniBeforePanel = document.body.classList.contains("mini"); viewMini(true); }
+  else restorePanelMini();
+});
 $("menuBtn").addEventListener("click", () => document.body.classList.add("drawer"));
 $("side").addEventListener("click", e => { if (e.target.closest("a")) document.body.classList.remove("drawer"); });
 document.addEventListener("click", e => {
@@ -311,6 +320,7 @@ document.addEventListener("click", e => {
 $("fr").addEventListener("load", () => { $("loading").hidden = true; });
 
 function route(){
+  restorePanelMini();
   const repo = decodeURIComponent(location.hash.replace(/^#\/?/, ""));
   const site = ALL.find(s => s.repo.toLowerCase() === repo.toLowerCase());
   if (!site){
