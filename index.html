@@ -331,9 +331,12 @@ function route(){
     return;
   }
   const url = BASE + site.repo + "/";
+  /* GitHub Pages lets browsers cache pages for ~10 min; a fresh query string makes the
+     framed site load its latest version every time it is opened from the hub */
+  const fresh = url + "?t=" + Math.floor(Date.now() / 60000);
   $("home").hidden = true; $("app").hidden = false;
   document.body.style.overflow = "hidden";
-  if ($("fr").getAttribute("src") !== url){ $("loading").hidden = false; $("fr").setAttribute("src", url); }
+  if (($("fr").getAttribute("src") || "").split("?")[0] !== url){ $("loading").hidden = false; $("fr").setAttribute("src", fresh); }
   document.querySelectorAll("#side a[data-repo]").forEach(a => a.classList.toggle("on", a.dataset.repo === site.repo));
   $("newtab").href = url;
   $("mtitle").textContent = site.icon + " " + site.name;
