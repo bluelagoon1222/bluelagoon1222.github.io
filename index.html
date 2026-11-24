@@ -153,6 +153,42 @@ body.mini #side .gsep{display:block}
   .mbar .t{flex:1;font-size:16px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .mbar svg{width:22px;height:22px}
 }
+
+/* ===== 사용 가이드: 언제 쓰나 / 상황별 칩 / 가이드 화면 ===== */
+.use{display:block;margin-top:6px;font-size:15px;color:var(--ink);word-break:keep-all}
+.use b{color:var(--navy);font-weight:800;margin-right:6px}
+.chipbar{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:12px 0;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-size:15px;font-weight:700;cursor:pointer;white-space:nowrap}
+.chip:hover{border-color:var(--orange)}
+.chip.on{background:var(--navy);border-color:var(--navy);color:var(--bg)}
+.chip.guide{border-color:var(--orange);color:var(--orange)}
+.sitnote{margin:0;padding:0 0 12px;font-size:14px;color:var(--sub);word-break:keep-all}
+#guidev{padding-bottom:20px}
+#guidev h2{margin:32px 0 6px;font-size:24px;font-weight:800;color:var(--navy)}
+#guidev .gnote{margin:0 0 16px;font-size:15px;color:var(--sub);word-break:keep-all}
+.gsec{margin:22px 0 8px;font-size:17px;font-weight:800;color:var(--orange)}
+.gcards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+details.gc{border:1px solid var(--line);border-radius:12px;background:var(--bg)}
+details.gc summary{list-style:none;cursor:pointer;padding:14px 16px;min-height:44px}
+details.gc summary::-webkit-details-marker{display:none}
+details.gc summary .gt{font-size:17px;font-weight:800}
+details.gc summary .gu{display:block;margin-top:4px;font-size:14.5px;color:var(--sub);word-break:keep-all}
+details.gc[open] summary{border-bottom:1px solid var(--line)}
+.gbody{padding:10px 16px 14px;font-size:15px}
+.gbody dl{margin:0;display:grid;grid-template-columns:92px 1fr;gap:8px 10px}
+.gbody dt{color:var(--sub);font-size:14px}
+.gbody dd{margin:0;word-break:keep-all}
+.gbody a{color:var(--navy);font-weight:700}
+.gopen{display:inline-flex;align-items:center;min-height:44px;margin-top:10px;padding:0 16px;border-radius:10px;background:var(--orange);color:#fff!important;text-decoration:none;font-weight:800}
+@media (max-width:820px){
+  .use{font-size:14.5px}
+  .chip{font-size:14px;padding:0 14px}
+  .gcards{grid-template-columns:1fr}
+  .gbody dl{grid-template-columns:78px 1fr}
+  #guidev h2{font-size:21px}
+}
 @media (prefers-reduced-motion:reduce){a.site::before,#side{transition:none}}
 </style>
 </head>
@@ -188,7 +224,9 @@ body.mini #side .gsep{display:block}
     </div>
   </header>
   <div class="hero-edge"></div>
+  <div class="chipbar" id="chipbar"><div class="wrap"><div class="chips" id="chips" role="tablist" aria-label="상황별 바로가기"></div><p class="sitnote" id="sitnote" hidden></p></div></div>
   <main class="wrap" id="main"></main>
+  <main class="wrap" id="guidev" hidden></main>
   <div class="wrap"><p class="empty" id="empty">찾는 사이트가 없습니다. 다른 단어로 검색해 보세요.</p></div>
   <footer>
     <div class="wrap">
@@ -246,6 +284,37 @@ const GROUPS = [
   ]}
 ];
 
+// ▼ 사용 가이드 데이터 (repo 기준). use = 언제 쓰나 한 줄, read = 보는 법, pair = 같이 볼 사이트(repo), sit = 상황 칩
+const SITUATIONS = [
+  { key:"am",     label:"아침 시장 점검", note:"출근 직후 10분 — 밤사이 미국·금리·심리와 오늘 일정 확인" },
+  { key:"flow",   label:"수급 확인",     note:"특정 종목·시장에 누가 사고 파는지, 공매도가 몰리는지 확인" },
+  { key:"event",  label:"이벤트 매매",   note:"공시·지수변경·내부자 매수처럼 날짜가 정해진 재료 찾기" },
+  { key:"us",     label:"미국 종목",     note:"서학개미 관심 종목, 구루·액티브 ETF 매매, 숏스퀴즈 후보" },
+  { key:"ai",     label:"AI 테마",       note:"AI 수요(토큰)·공급(수주잔고)·모델 경쟁으로 사이클 점검" },
+  { key:"client", label:"고객 상담",     note:"고객 보유 ELS·ETF 점검과 상품 비교 자료" }
+];
+const GUIDE = {
+  "Fred-Macro-Desk":       { sit:["am"],         use:"금리·환율이 크게 움직인 날, 지수와 겹쳐 원인 확인", read:"금리·환율선을 지수와 같은 차트에 겹쳐 방향이 같은지 반대인지 확인", pair:["FearGreed-Korea","Market-Calendar-Korea"] },
+  "Finviz-Korea":          { sit:["am","flow"],  use:"장중에 오늘 어느 섹터가 강하고 약한지 한눈에 확인", read:"칸 크기는 시가총액, 색은 등락률. 같은 색이 뭉친 섹터가 오늘의 테마", pair:["Samo-Flow-Korea","Index-Rebalance-Korea"] },
+  "FearGreed-Korea":       { sit:["am"],         use:"급등락 다음 날, 시장이 과열인지 공포인지 단계 확인", read:"지수가 극단(과열·공포)에 가까울수록 추격매수·투매를 경계하는 참고 신호", pair:["Credit-Loan-Korea","Fred-Macro-Desk"] },
+  "Market-Calendar-Korea": { sit:["am","event"], use:"이번 주 실적발표·FOMC·휴장일 등 일정 미리 확인", read:"고객 보유 종목의 실적일과 금리 이벤트 날짜를 먼저 체크", pair:["Index-Rebalance-Korea","MIRAE-ELS-CHECK"] },
+  "Samo-Flow-Korea":       { sit:["flow"],       use:"사모펀드가 연속으로 사는 종목을 찾을 때", read:"하루보다 며칠 연속 순매수가 이어지는지가 중요", pair:["Credit-Loan-Korea","Insider-Korea"] },
+  "Credit-Loan-Korea":     { sit:["flow"],       use:"종목에 공매도·대차가 쌓이는지, 숏커버링이 나오는지 확인", read:"대차잔고 증가는 공매도 대기, 급감은 숏커버링 가능성. 1·5·20일 변화율을 함께 봄", pair:["Samo-Flow-Korea","FearGreed-Korea"] },
+  "Insider-Korea":         { sit:["flow","event"], use:"임원·대주주가 자기 돈으로 사는 종목을 찾을 때", read:"여러 명이 비슷한 시기에 산 클러스터 매수가 단독 매수보다 의미가 큼", pair:["Buyback-Korea","Samo-Flow-Korea"] },
+  "Buyback-Korea":         { sit:["event"],      use:"자사주 매입·소각·밸류업 공시가 나온 종목 확인", read:"취득보다 소각이 주주환원 효과가 큼. 공시 후 주가 반응을 같이 확인", pair:["Insider-Korea","Index-Rebalance-Korea"] },
+  "Index-Rebalance-Korea": { sit:["event","flow"], use:"6·12월 지수 정기변경 전후 편입·편출 예상 종목 확인", read:"예상 패시브 매수(매도) 금액을 하루 거래대금과 비교해 수급 충격 크기 판단", pair:["Market-Calendar-Korea","Finviz-Korea"] },
+  "Guru-Check-US":         { sit:["us"],         use:"유명 투자자·정치인이 최근 사고 판 미국 종목 확인", read:"13F는 분기 말 기준이라 늦게 공개됨. 방향 참고용으로 사용", pair:["US-Active-ETF","Reddit-Issue-Korea"] },
+  "US-Active-ETF":         { sit:["us","client"], use:"ARK 등 액티브 ETF 매니저가 매일 사고 파는 종목 확인", read:"여러 ETF가 같은 날 같은 종목을 담으면 강한 관심 신호", pair:["Guru-Check-US","ActiveETF-Check"] },
+  "Short-Squeeze-US":      { sit:["us","flow"],  use:"미국에서 숏스퀴즈(공매도 강제 청산 급등) 후보 찾기", read:"공매도 비율·커버 일수가 높고 가격이 오르기 시작한 종목이 상위", pair:["Reddit-Issue-Korea","Guru-Check-US"] },
+  "Reddit-Issue-Korea":    { sit:["us"],         use:"고객이 묻는 미국 화제 종목의 최신 이슈를 한국어로 확인", read:"언급이 갑자기 늘어난 종목은 기사 제목으로 이유를 먼저 확인", pair:["Short-Squeeze-US","US-Active-ETF"] },
+  "AI-Backlog-Radar":      { sit:["ai"],         use:"분기 실적 시즌에 AI 밸류체인 수주잔고 흐름 확인", read:"수주잔고(RPO, Remaining Performance Obligations)가 매출보다 빨리 늘면 수요 강함", pair:["AI-Token-Check","AI-Model-Map"] },
+  "AI-Token-Check":        { sit:["ai"],         use:"AI 사용량이 실제로 늘고 있는지, 단가 급락 경보 확인", read:"토큰 사용량 증가는 데이터센터 수요, 단가 급락·중국 신모델은 경쟁 위험 신호", pair:["AI-Backlog-Radar","AI-Model-Map"] },
+  "AI-Model-Map":          { sit:["ai"],         use:"미국·중국 AI 모델 경쟁 구도와 가성비 순위 확인", read:"성능 대비 가격이 싼 모델의 순위 상승은 단가 하락 압력", pair:["AI-Token-Check","AI-Backlog-Radar"] },
+  "ActiveETF-Check":       { sit:["client"],     use:"고객에게 같은 섹터 액티브 ETF를 비교 제안할 때", read:"구성종목 비중 변화와 기간별 성과를 함께 비교", pair:["US-Active-ETF","ETF-Dividend-Korea"] },
+  "MIRAE-ELS-CHECK":       { sit:["client","event"], use:"고객 보유 ELS·ELT의 조기상환 가능일과 조건 확인", read:"회차 입력 후 다음 평가일과 상환 기준 가격을 확인", pair:["Market-Calendar-Korea","Fred-Macro-Desk"] },
+  "ETF-Dividend-Korea":    { sit:["client"],     use:"월 분배금(배당) 현금흐름이 필요한 고객 상담 시", read:"비율을 입력하면 12개월 월별 예상 분배금·과세표준을 추정", pair:["ActiveETF-Check","MIRAE-ELS-CHECK"] }
+};
+
 const BASE = "https://bluelagoon1222.github.io/";
 const HOME_TITLE = document.title;
 const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -258,10 +327,11 @@ GROUPS.forEach(g => {
   sec.innerHTML =
     `<div class="group-head"><h2>${esc(g.title)}</h2><span>${esc(g.note)}</span></div><div class="list">` +
     g.sites.map(s => {
-      const key = (s.name + " " + s.repo + " " + s.desc + " " + (s.tags || []).join(" ")).toLowerCase();
-      return `<a class="site" href="#/${esc(s.repo)}" data-key="${esc(key)}">
+      const gd = GUIDE[s.repo] || {};
+      const key = (s.name + " " + s.repo + " " + s.desc + " " + (gd.use || "") + " " + (s.tags || []).join(" ")).toLowerCase();
+      return `<a class="site" href="#/${esc(s.repo)}" data-key="${esc(key)}" data-sit="${esc((gd.sit || []).join(" "))}">
         <div class="name"><span class="ico" aria-hidden="true">${s.icon}</span>${esc(s.name)}<span class="repo">/${esc(s.repo)}</span></div>
-        <div class="desc">${esc(s.desc)}${s.tags ? `<span class="tags">${s.tags.map(esc).join(" ")}</span>` : ""}</div>
+        <div class="desc">${esc(s.desc)}${GUIDE[s.repo] ? `<span class="use"><b>언제 쓰나</b>${esc(GUIDE[s.repo].use)}</span>` : ""}${s.tags ? `<span class="tags">${s.tags.map(esc).join(" ")}</span>` : ""}</div>
         <div class="when"><strong>갱신</strong>${esc(s.when)}</div></a>`;
     }).join("") + `</div>`;
   $("main").appendChild(sec);
@@ -275,13 +345,24 @@ function tick(){
 }
 tick(); setInterval(tick, 15000);
 
-$("q").addEventListener("input", e => {
-  const q = e.target.value.trim().toLowerCase();
+/* --- 상황별 칩 + 검색 (둘 다 적용) --- */
+let SIT = "all";
+try { SIT = localStorage.getItem("hubSit") || "all"; } catch(e) {}
+if (SIT !== "all" && !SITUATIONS.some(x => x.key === SIT)) SIT = "all";
+$("chips").innerHTML =
+  `<button class="chip" data-k="all" role="tab">전체</button>` +
+  SITUATIONS.map(x => `<button class="chip" data-k="${x.key}" role="tab">${esc(x.label)}</button>`).join("") +
+  `<a class="chip guide" href="#/guide" style="display:inline-flex;align-items:center;text-decoration:none">📖 사용 가이드</a>`;
+function applyFilter(){
+  const q = $("q").value.trim().toLowerCase();
   let shown = 0;
+  document.querySelectorAll("#chips .chip[data-k]").forEach(b => { const on = b.dataset.k === SIT; b.classList.toggle("on", on); b.setAttribute("aria-selected", on); });
+  const sn = SITUATIONS.find(x => x.key === SIT);
+  $("sitnote").hidden = !sn; $("sitnote").textContent = sn ? sn.note : "";
   document.querySelectorAll("#main section").forEach(sec => {
     let n = 0;
     sec.querySelectorAll("a.site").forEach(a => {
-      const hit = !q || a.dataset.key.includes(q);
+      const hit = (!q || a.dataset.key.includes(q)) && (SIT === "all" || a.dataset.sit.split(" ").includes(SIT));
       a.style.display = hit ? "" : "none";
       if (hit) n++;
     });
@@ -289,7 +370,35 @@ $("q").addEventListener("input", e => {
     shown += n;
   });
   $("empty").style.display = shown ? "none" : "block";
+}
+$("chips").addEventListener("click", e => {
+  const b = e.target.closest("button.chip"); if (!b) return;
+  SIT = b.dataset.k;
+  try { localStorage.setItem("hubSit", SIT); } catch(e) {}
+  applyFilter();
+  b.scrollIntoView({ block:"nearest", inline:"center", behavior:"smooth" });
 });
+$("q").addEventListener("input", applyFilter);
+applyFilter();
+
+/* --- 사용 가이드 화면 (#/guide) --- */
+const NAME = Object.fromEntries(ALL.map(s => [s.repo, s]));
+$("guidev").innerHTML =
+  `<a class="gopen" href="#" style="background:var(--navy);margin-top:24px">← 사이트 목록으로</a><h2>📖 사이트 사용 가이드</h2><p class="gnote">상황을 먼저 고르고, 카드를 눌러 보는 법과 같이 볼 사이트를 확인하세요.</p>` +
+  SITUATIONS.map(x => {
+    const list = ALL.filter(s => (GUIDE[s.repo]?.sit || [])[0] === x.key);
+    if (!list.length) return "";
+    return `<div class="gsec">${esc(x.label)} <span style="font-size:14px;font-weight:400;color:var(--sub)">— ${esc(x.note)}</span></div><div class="gcards">` +
+      list.map(s => { const g = GUIDE[s.repo];
+        return `<details class="gc"><summary><span class="gt">${s.icon} ${esc(s.name)}</span><span class="gu">${esc(g.use)}</span></summary>
+          <div class="gbody"><dl>
+            <dt>보는 법</dt><dd>${esc(g.read)}</dd>
+            <dt>같이 볼 곳</dt><dd>${g.pair.filter(r => NAME[r]).map(r => `<a href="#/${esc(r)}">${esc(NAME[r].name)}</a>`).join(" · ")}</dd>
+            <dt>갱신</dt><dd>${esc(s.when)}</dd>
+          </dl><a class="gopen" href="#/${esc(s.repo)}">사이트 열기 →</a></div></details>`;
+      }).join("") + `</div>`;
+  }).join("");
+function setGuideOpen(){ const wide = matchMedia("(min-width:821px)").matches; document.querySelectorAll("details.gc").forEach(d => d.open = wide); }
 
 /* --- 왼쪽 메뉴 --- */
 const HOME_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>`;
@@ -300,6 +409,7 @@ $("side").innerHTML =
     g.sites.map(s => `<a href="#/${esc(s.repo)}" data-repo="${esc(s.repo)}" title="${esc(s.name)}"><span class="ico" aria-hidden="true">${s.icon}</span><span class="lbl">${esc(s.name)}</span></a>`).join("")
   ).join("") +
   `<div class="bottom">
+     <a href="#/guide" title="사이트 사용 가이드"><span class="ico" aria-hidden="true">📖</span><span class="lbl">사용 가이드</span></a>
      <a id="newtab" href="#" target="_blank" rel="noopener" title="현재 사이트를 새 탭으로 열기"><span class="ico" aria-hidden="true">↗</span><span class="lbl">새 탭으로 열기</span></a>
      <button class="minibtn" id="miniBtn" title="메뉴 접기/펴기"><span class="ico" aria-hidden="true">⇤</span><span class="lbl">메뉴 접기</span></button>
    </div>`;
@@ -333,11 +443,17 @@ $("fr").addEventListener("load", () => { $("loading").hidden = true; });
 function route(){
   restorePanelMini();
   const repo = decodeURIComponent(location.hash.replace(/^#\/?/, ""));
-  const site = ALL.find(s => s.repo.toLowerCase() === repo.toLowerCase());
+  const isGuide = repo.toLowerCase() === "guide";
+  const site = isGuide ? null : ALL.find(s => s.repo.toLowerCase() === repo.toLowerCase());
+  ["main","chipbar","empty"].forEach(id => $(id).hidden = isGuide);
+  $("guidev").hidden = !isGuide;
+  if (isGuide){ setGuideOpen(); document.querySelector(".searchrow").hidden = true; }
+  else document.querySelector(".searchrow").hidden = false;
   if (!site){
     $("app").hidden = true; $("home").hidden = false;
     document.body.style.overflow = "";
-    document.title = HOME_TITLE;
+    document.title = isGuide ? "사용 가이드 · SJ Market Desk" : HOME_TITLE;
+    if (isGuide) window.scrollTo(0, 0);
     if ($("fr").getAttribute("src")) $("fr").removeAttribute("src");
     return;
   }
