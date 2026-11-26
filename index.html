@@ -276,7 +276,8 @@ const GROUPS = [
   { title:"AI 테마", note:"AI 투자 사이클의 수요·공급 체크", sites:[
     { icon:"🧱", name:"AI 백로그 레이더", repo:"AI-Backlog-Radar", desc:"AI 밸류체인 수주잔고(RPO)·일감 배수·하이퍼스케일러 설비투자 분기 추이", when:"평일 06:30" },
     { icon:"🪙", name:"AI TOKEN CHECK", repo:"AI-Token-Check", desc:"글로벌 AI 토큰 사용량·단가·중국 점유율과 단가 급락·중국 신모델 경보, 한·일 AI 인프라주 연동", when:"매일 07:00" },
-    { icon:"🧠", name:"AI MODEL MAP", repo:"AI-Model-Map", desc:"미국·중국 AI 모델을 업체별·작업별로 비교. 성능·가성비·인기 순위와 Finviz형 지도", when:"매일 06:00" }
+    { icon:"🧠", name:"AI MODEL MAP", repo:"AI-Model-Map", desc:"미국·중국 AI 모델을 업체별·작업별로 비교. 성능·가성비·인기 순위와 Finviz형 지도", when:"매일 06:00" },
+    { icon:"💾", name:"MEMORY PRICE CHECK", repo:"Memory-Price-Desk", tags:["#DRAM현물가","#NAND현물가","#HBM가격"], desc:"DRAM·NAND 현물가·계약가 매일 기록과 시계열 차트, 현물÷계약 선행지표, HBM 가격 전망, 메모리 주가 겹쳐 보기", when:"평일 19:40 · 매일 07:00" }
   ]},
   { title:"상품·고객 자산", note:"고객 보유 상품 점검", sites:[
     { icon:"📊", name:"액티브 ETF CHECK", repo:"ActiveETF-Check", desc:"같은 섹터 액티브 ETF의 구성종목·비중 변화·성과 비교 (국내/해외)", when:"평일 08:50 외" },
@@ -312,6 +313,7 @@ const GUIDE = {
   "AI-Backlog-Radar":      { sit:["ai"],         use:"분기 실적 시즌에 AI 밸류체인 수주잔고 흐름 확인", read:"수주잔고(RPO, Remaining Performance Obligations)가 매출보다 빨리 늘면 수요 강함", pair:["AI-Token-Check","AI-Model-Map"] },
   "AI-Token-Check":        { sit:["ai"],         use:"AI 사용량이 실제로 늘고 있는지, 단가 급락 경보 확인", read:"토큰 사용량 증가는 데이터센터 수요, 단가 급락·중국 신모델은 경쟁 위험 신호", pair:["AI-Backlog-Radar","AI-Model-Map"] },
   "AI-Model-Map":          { sit:["ai"],         use:"미국·중국 AI 모델 경쟁 구도와 가성비 순위 확인", read:"성능 대비 가격이 싼 모델의 순위 상승은 단가 하락 압력", pair:["AI-Token-Check","AI-Backlog-Radar"] },
+  "Memory-Price-Desk":     { sit:["ai","am"],    use:"SK하이닉스·삼성전자 주가가 크게 움직인 날, 메모리 가격이 같이 움직였는지 확인", read:"현물÷계약 배수가 1 아래로 내려가면 계약가 인하 압력, 연속 하락 신호와 함께 볼 것", pair:["AI-Token-Check","AI-Backlog-Radar"] },
   "ActiveETF-Check":       { sit:["client"],     use:"고객에게 같은 섹터 액티브 ETF를 비교 제안할 때", read:"구성종목 비중 변화와 기간별 성과를 함께 비교", pair:["US-Active-ETF","ETF-Dividend-Korea"] },
   "MIRAE-ELS-CHECK":       { sit:["client","event"], use:"고객 보유 ELS·ELT의 조기상환 가능일과 조건 확인", read:"회차 입력 후 다음 평가일과 상환 기준 가격을 확인", pair:["Market-Calendar-Korea","Fred-Macro-Desk"] },
   "ETF-Dividend-Korea":    { sit:["client"],     use:"월 분배금(배당) 현금흐름이 필요한 고객 상담 시", read:"비율을 입력하면 12개월 월별 예상 분배금·과세표준을 추정", pair:["ActiveETF-Check","MIRAE-ELS-CHECK"] }
