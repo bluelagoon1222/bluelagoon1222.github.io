@@ -254,6 +254,7 @@ details.gc[open] summary{border-bottom:1px solid var(--line)}
 // ▼ 사이트 추가·삭제는 이 목록만 고치면 됩니다 (repo = 깃허브 저장소 이름, 대소문자 그대로 / icon = 왼쪽 메뉴 아이콘)
 const GROUPS = [
   { title:"매크로·시장 개관", note:"오늘 시장의 큰 그림 — 금리·환율·심리·일정", sites:[
+    { icon:"📨", name:"미래에셋 텔레그램 시황 CHECK", repo:"Market-Brief-Korea", tags:["#글로벌마켓브리핑","#마켓클로징","#카톡공유"], desc:"미래에셋증권 시황 텔레그램(김석환·김주연) 글을 실시간 모아보고, AI 관전포인트·투자 체크포인트를 붙여 카톡 공유", when:"06~24시 10분 간격" },
     { icon:"🌐", name:"MACRO CHART CHECK", repo:"Fred-Macro-Desk", tags:["#금리차트","#환율차트","#지수차트","#금차트","#코인차트","#유가차트","#물가차트"], desc:"미·한·일·유럽 정책금리·국채금리와 환율·원자재·코인·신용·물가·주가지수를 시계열로 겹쳐 보기", when:"매일 07:00 · 평일 18:30" },
     { icon:"🗺️", name:"한국 히트맵", repo:"Finviz-Korea", desc:"KOSPI·KOSDAQ·ETF 섹터별 등락을 한눈에 보는 FINVIZ형 히트맵", when:"장중 30분 간격" },
     { icon:"🌡️", name:"공포·탐욕 CHECK", repo:"FearGreed-Korea", desc:"한국 공포·탐욕 지수, 미국 F&G, 한국 과열도 지수와 시장 폭", when:"매일" },
@@ -294,6 +295,7 @@ const SITUATIONS = [
   { key:"client", label:"고객 상담",     note:"고객 보유 ELS·ETF 점검과 상품 비교 자료" }
 ];
 const GUIDE = {
+  "Market-Brief-Korea":    { sit:["am","client"], use:"아침 브리핑·장중 시황을 고객에게 카톡으로 보낼 때", read:"1번 시황만, 2번 AI 초안 포함, 3번 직접 작성. 2번은 보내기 전 한 번 읽어볼 것", pair:["Fred-Macro-Desk","Finviz-Korea"] },
   "Fred-Macro-Desk":       { sit:["am"],         use:"금리·환율이 크게 움직인 날, 지수와 겹쳐 원인 확인", read:"금리·환율선을 지수와 같은 차트에 겹쳐 방향이 같은지 반대인지 확인", pair:["FearGreed-Korea","Market-Calendar-Korea"] },
   "Finviz-Korea":          { sit:["am","flow"],  use:"장중에 오늘 어느 섹터가 강하고 약한지 한눈에 확인", read:"칸 크기는 시가총액, 색은 등락률. 같은 색이 뭉친 섹터가 오늘의 테마", pair:["Samo-Flow-Korea","Index-Rebalance-Korea"] },
   "FearGreed-Korea":       { sit:["am"],         use:"급등락 다음 날, 시장이 과열인지 공포인지 단계 확인", read:"지수가 극단(과열·공포)에 가까울수록 추격매수·투매를 경계하는 참고 신호", pair:["Credit-Loan-Korea","Fred-Macro-Desk"] },
